@@ -1,12 +1,16 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native'; // Make sure you have this import
-import MainStack from './src/navigation/MainStack'; // Import your main stack navigation
+import { NavigationContainer } from '@react-navigation/native';
+import MainStack from './src/navigation/MainStack';
+import Toast from 'react-native-toast-message';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <MainStack />
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <MainStack />
+      </NavigationContainer>
+      <Toast />
+    </>
   );
 };
 

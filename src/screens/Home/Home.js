@@ -1,15 +1,40 @@
 
 import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; 
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Sidebar from '../sidenavbar/sidenavbar'; 
+import { ScrollView } from 'react-native';
+import { getRequest } from '../../utils/api';
 const Home = () => {
   const navigation = useNavigation();
 
   const [isSidebarVisible, setSidebarVisible] = useState(false);
+  const [thumbnail, setThumbnail] = useState('');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await getRequest('/customer/home-page-details'); 
+  //       const { news, settings } = response.data;
+
+  //       if (news?.length > 0) setThumbnail(news[0].thumbnail);
+  //       if (settings?.length > 0) setYoutubeUrl(settings[0].youtubeUrl);
+  //     } catch (error) {
+  //       console.error('Error fetching home data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
   
-  
+  const getYoutubeId = (url) => {
+    const regExp = /(?:v=|\/)([0-9A-Za-z_-]{11}).*/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+  };
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
@@ -25,6 +50,7 @@ const Home = () => {
   };
 
   return (
+    <ScrollView contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={true}>
     <View style={styles.homeContainer}>
      
       <View style={styles.Menu}>
@@ -83,47 +109,7 @@ const Home = () => {
       </View>
 
       {/* More Cards */}
-      {/* <View style={styles.moreCards}>
-        <View style={styles.moreCardsLeft}>
-          <TouchableOpacity style={[styles.smallCard, styles.greenCard, styles.row]} >
-          <Icon name="calendar" size={20} color="#B75606" />
-            <Text style={styles.cardText}>நாள் காட்டி</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.smallCard, styles.redCard, styles.row]}>
-          <Icon name="flower" size={20} color="#4df052" />
-            <Text style={styles.cardText}>சுபஹோரை</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.smallCard, styles.blueCard, styles.row]}>
-          <Icon name="person" size={10} color="#1ffbff" />
-          <Icon name="person" size={10} color="#1ffbff" />
-            <Text style={styles.cardTextweeding}>திருமண பொருத்தம்</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.smallCard, styles.purpleCard, styles.row]}>
-          <Icon name="link" size={20} color="#a530ff" />
-            <Text style={styles.cardTextdate}>முகூர்த்த தினங்கள்</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.moreCardsRight}>
-        <TouchableOpacity style={[styles.smallCard, styles.yellow, styles.row]} >
-          <Icon name="calendar" size={20} color="#FFD642" />
-            <Text style={styles.cardText}>மாத காட்டி</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.smallCard, styles.redCardbull, styles.row]}>
-          <Icon name="flower" size={20} color="#e33522" />
-            <Text style={styles.cardTextbull}>ராசுகாலம் எமகண்டம்</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.smallCard, styles.blueCardstar, styles.row]}>
-          <Icon name="star" size={20} color="#0839fc" />
-            <Text style={styles.cardTextstar}>கூடா நட்சத்திரம்</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={[styles.smallCard, styles.purpleCardbook,styles.row]}>
-          <Icon name="book" size={20} color="#800080" />
-            <Text style={styles.cardTextbook}>கொளரி புன்சாங்களம்</Text>
-          </TouchableOpacity>
-        </View>
-      </View> */}
+    
       <Text style={styles.todaysupdate}>Today's Updates</Text>
        <View style={styles.rowContainer}>
        <View style={styles.currentnewsleft}>
@@ -134,7 +120,7 @@ const Home = () => {
         />
         <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Updates'); 
+          navigation.navigate('Onlineastro'); 
         }}
       >  <Text style={styles.text}  >Current News</Text></TouchableOpacity>
       
@@ -152,7 +138,7 @@ const Home = () => {
         />
         <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Onlineastro'); 
+          navigation.navigate('Order'); 
         }}
       >  <Text style={styles.text}  >Current News</Text></TouchableOpacity>
       
@@ -162,8 +148,106 @@ const Home = () => {
           style={styles.RightArrow}
         />
     </View>
+
+   
     </View>
+      <View style={styles.moreCards}>
+    
+    
+     
+    <View style={styles.moreCardsLeft}>
+      <TouchableOpacity style={[styles.smallCard, styles.greenCard, styles.row]} >
+      <Image
+                       source={require('../../../assets/images/calendar 1(1).png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardText}>நாள் காட்டி</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.redCard, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Flower.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardText}>சுபஹோரை</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.blueCard, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Meeting.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextweeding}>திருமண பொருத்தம்</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.purpleCard, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Chain Intermediate.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextdate}>முகூர்த்த தினங்கள்</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.redCard, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Flower.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardText}>சுபஹோரை</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.blueCard, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Meeting.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextweeding}>திருமண பொருத்தம்</Text>
+      </TouchableOpacity>
     </View>
+ 
+    <View style={styles.moreCardsRight}>
+    <TouchableOpacity style={[styles.smallCard, styles.yellow, styles.row]} >
+    <Image
+                       source={require('../../../assets/images/calendar 1.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardText}>மாத காட்டி</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.redCardbull, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Bull.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextbull}>ராசுகாலம் எமகண்டம்</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.blueCardstar, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Christmas Star.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextstar}>கூடா நட்சத்திரம்</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity style={[styles.smallCard, styles.purpleCardbook,styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Cooking Book.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextbook}>கொளரி புன்சாங்களம்</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.redCardbull, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Bull.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextbull}>ராசுகாலம் எமகண்டம்</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.smallCard, styles.blueCardstar, styles.row]}>
+      <Image
+                       source={require('../../../assets/images/Christmas Star.png')} 
+                       style={styles.cartIcon}
+                     />
+        <Text style={styles.cardTextstar}>கூடா நட்சத்திரம்</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+    </View>
+    </ScrollView>
   );
 };
 
@@ -412,7 +496,7 @@ sidebarItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-  },
+    marginTop:'8%'  },
   moreCardsLeft: {
     flex: 1,
     alignItems: 'center',

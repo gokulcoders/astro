@@ -8,13 +8,15 @@ import Shopping from '../screens/shopping/shopping';
 import Updates from '../screens/Cards/cards';
 import Onlineastro from '../screens/onlineastro/onlineastro';
 import Order from'../screens/Order/Order';
+import Dailyscreen from '../screens/Datepage/datepage';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Details">
+    <Stack.Navigator initialRouteName="Hero">
     <Stack.Screen name="Hero" component={HeroScreen} options={{ headerShown: false, }} />
       <Stack.Screen name="Details" component={DetailsScreen} options={{ headerShown: false, }} />
+      <Stack.Screen name="Daily" component={Dailyscreen} options={{ headerShown: false, }} />
       <Stack.Screen name="Astro" component={AstroScreen} options={{headerShown: false, }} />
       <Stack.Screen name="Home" component={HomeScreen} options={{headerShown: false, }} />
       <Stack.Screen name="Shopping" component={Shopping} options={{headerShown: false, }} />

@@ -9,13 +9,13 @@ const Hero = () => {
   const screenWidth = Dimensions.get('window').width;
 
   
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     navigation.navigate('Home'); 
-  //   }, 9000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('Details'); 
+    }, 9000);
 
-  //   return () => clearTimeout(timer); 
-  // }, [navigation]);
+    return () => clearTimeout(timer); 
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -35,7 +35,7 @@ const Hero = () => {
           fontWeight="650"
           fill="black"
         >
-          AstroGlow
+         நல்ல நேரம் ஆஸ்ட்ரோ
         </SvgText>
       </Svg>
 

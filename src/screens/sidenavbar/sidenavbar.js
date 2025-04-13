@@ -9,7 +9,7 @@ export default function SidebarScreen({ isVisible, toggleSidebar }) {
   return (
     <View style={styles.sidebar}>
       <View style={styles.astro}> <Image
-          source={require('../../../assets/images/Fantasy.png')} 
+          source={require('../../../assets/images/Frame.png')} 
           style={styles.Fantasy}
         />
          <Text style={styles.sidetitle}>AstroGlow</Text></View>
@@ -48,6 +48,25 @@ export default function SidebarScreen({ isVisible, toggleSidebar }) {
           style={styles.home}
         />
          <Text style={styles.sidebarText}>ஆன்லைனில் ஜோதிடம் பார்க்க</Text>
+       </TouchableOpacity>
+
+       <TouchableOpacity style={styles.sidebarItem} onPress={() => {navigation.navigate('Daily')}}>
+       <Image
+          source={require('../../../assets/images/newsstand.png')} 
+          style={styles.home}
+        />
+         <Text style={styles.sidebarText}>செய்திகள்
+         </Text>
+       </TouchableOpacity>
+
+       <TouchableOpacity style={styles.sidebarItem} onPress={() => {navigation.navigate('Astro')}}>
+
+       <Image
+          source={require('../../../assets/images/attachemail.png')}
+          style={styles.home}
+        />
+         <Text style={styles.sidebarText}>இன்பாக்ஸ்
+         </Text>
        </TouchableOpacity>
        
        <TouchableOpacity style={styles.sidebarItem} onPress={() => {navigation.navigate('Astro')}}>
