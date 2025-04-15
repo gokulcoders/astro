@@ -1,40 +1,43 @@
 
-import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,Image,SafeAreaView, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; 
-import React, { useState,useEffect} from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Sidebar from '../sidenavbar/sidenavbar'; 
 import { ScrollView } from 'react-native';
 import { getRequest } from '../../utils/api';
+import YoutubePlayer from 'react-native-youtube-iframe';
+import Video from 'react-native-video';
 const Home = () => {
   const navigation = useNavigation();
 
   const [isSidebarVisible, setSidebarVisible] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  const playerRef = useRef(null);
 
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await getRequest('/customer/home-page-details'); 
-  //       const { news, settings } = response.data;
-
-  //       if (news?.length > 0) setThumbnail(news[0].thumbnail);
-  //       if (settings?.length > 0) setYoutubeUrl(settings[0].youtubeUrl);
-  //     } catch (error) {
-  //       console.error('Error fetching home data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getRequest('/customer/home-page-details'); 
+        const { news, settings } = response.data; 
   
-  const getYoutubeId = (url) => {
-    const regExp = /(?:v=|\/)([0-9A-Za-z_-]{11}).*/;
-    const match = url.match(regExp);
-    return match ? match[1] : null;
-  };
+        if (news?.length > 0) setThumbnail(news[0].thumbnail);
+        if (settings?.length > 0) setYoutubeUrl(settings[0].youtubeUrl);
+      } catch (error) {
+        console.error('Error fetching home data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  console.log(youtubeUrl, "thumbnail");
+  console.log(thumbnail, "youtubeUrl");
+  
+
+
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
@@ -97,16 +100,23 @@ const Home = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.videoSection}>
-        <View style={styles.videoContainer}>
-        
-        <Image
-          source={require('../../../assets/images/Videocam.png')} 
-          style={styles.home}
+    
+     
+      <SafeAreaView style={styles.safeArea}>
+ 
+      <View style={styles.homeContainer}>
+        <YoutubePlayer
+          height={170}
+          width={310}
+          play={true}
+          videoId="dsTXcSeAZq8"
+          onReady={() => console.log('YouTube Player is ready')}
+          onChangeState={state => console.log('State: ', state)}
         />
-          <Text style={styles.videoText}>Video</Text>
-        </View>
       </View>
+    </SafeAreaView>
+  
+
 
       {/* More Cards */}
     
@@ -360,10 +370,10 @@ sidebarItem: {
     
   homeContainer: {
     flex: 1,
-    backgroundColor: '#FFF5C6',
-    alignItems: 'center',
-    padding: 20,
-   
+    backgroundColor: '#FFF5C6', // Keep your background color
+    alignItems: 'center',       // Center content horizontally
+    justifyContent: 'center',   // Center content vertically
+    padding: 10,                // Optional padding around the player
   },
   dateSection: {
     backgroundColor: '#faaf3e',
@@ -477,13 +487,13 @@ sidebarItem: {
     alignItems: 'center',
     marginBottom: 10,
   },
-  videoContainer: {
-    backgroundColor: '#d6d6c2',
-    padding: 10,
-    borderRadius: 15,
-    alignItems: 'center',
-    width: '90%',
+ 
+  safeArea: {
+    flex: 1,               // Ensures the view takes the entire available screen space
+    marginTop: 0,          // Remove any extra top margin that SafeAreaView might add
+    
   },
+ 
   videoIcon: {
     fontSize: 50,
     marginBottom: 10,

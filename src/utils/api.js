@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BASE_URL = 'http://192.168.28.163:5000';
 
@@ -10,15 +11,21 @@ const apiClient = axios.create({
   },
 });
 
-
-export const setAuthToken = (token) => {
-  if (token) {
-    apiClient.defaults.headers.common['Authorization'] = `jwt ${token}`;
-  } else {
-    delete apiClient.defaults.headers.common['Authorization'];
+// 🔄 Add a request interceptor to attach the token
+apiClient.interceptors.request.use(
+  async (config) => {
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `jwt ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-};
+);
 
+// 🌐 GET request
 export const getRequest = async (endpoint, params = {}) => {
   try {
     const response = await apiClient.get(endpoint, { params });
@@ -29,10 +36,10 @@ export const getRequest = async (endpoint, params = {}) => {
   }
 };
 
-
-export const postRequest = async (endpoint, data = {}) => {
+// 📡 POST request
+export const postRequest = async (endpoint, body = {}) => {
   try {
-    const response = await apiClient.post(endpoint, data);
+    const response = await apiClient.post(endpoint, body);
     return response.data;
   } catch (error) {
     console.error('POST Request Error:', error.response?.data || error.message);

@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Image } from 'react-native';
 import Svg, { Defs, RadialGradient, Stop, Text as SvgText, Rect } from 'react-native-svg';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Toast from 'react-native-toast-message';
 import { postRequest } from '../../utils/api'; 
-import { setAuthToken } from '../../utils/api'; 
+
 const DetailsScreen = ({ navigation }) => {
+
   const [name, setName] = useState('');
   const [dob, setdob] = useState('');
   const [phone, setphone] = useState('');
@@ -47,58 +49,65 @@ const DetailsScreen = ({ navigation }) => {
   };
 
 
-const handleNext = async () => {
-  if (!name || !dob || !dobdate || !place || !phone) {
-    Toast.show({
-      type: 'error',
-      position: 'top',
-      text1: 'பிழை',
-      text2: 'அனைத்து தகவல்களையும் உள்ளிடவும்.',
-      visibilityTime: 3000,
-      autoHide: true,
-      topOffset: 60
-    });
-    return;
-  }
+  const handleNext = async () => {
+    if (!name || !dob || !dobdate || !place || !phone) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'பிழை',
+        text2: 'அனைத்து தகவல்களையும் உள்ளிடவும்.',
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 60
+      });
+      return;
+    }
+  
+    const body = {
+      phoneNumber: phone,
+      name: name,
+      dateOfBirth: dob,
+      birthTime: dobdate,
+      birthPlace: place,
+    };
+  
+    try {
+      const response = await postRequest('/auth/signup/customer', body);
+      console.log('Signup Success:', response);
+  
 
-  const body = {
-    phoneNumber: phone,
-    name: name,
-    dateOfBirth: dob,
-    birthTime: dobdate,
-    birthPlace: place,
+      if (response.data?.token) {
+        await AsyncStorage.setItem('token', response.data.token);
+        console.log('Token saved!');
+      }
+      
+  
+
+      navigation.navigate('Home');
+  
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'வெற்றி!',
+        text2: response.message,
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 60,
+      });
+    } catch (error) {
+      console.error('Signup Failed:', error.response?.data || error.message);
+  
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'பிழை',
+        text2: error.response?.data?.message || error.message || 'API அழைப்பு தோல்வி.',
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 60,
+      });
+    }
   };
-
-  try {
-    const response = await postRequest('/auth/signup/customer', body);
-    console.log('Signup Success:', response);
-    setAuthToken(response.token);
-    navigation.navigate('Home', { token: response.token });
-    Toast.show({
-      type: 'success',
-      position: 'top',
-      text1: 'வெற்றி!',
-      text2: response.message, // ✅ showing backend message
-      visibilityTime: 3000,
-      autoHide: true,
-      topOffset: 60,
-    });
-  } catch (error) {
-  
-    console.error('Signup Failed:', error.response?.data || error.message);
-  
-    Toast.show({
-      type: 'error',
-      position: 'top',
-      text1: 'பிழை',
-      text2: error.response?.data?.message || error.message || 'API அழைப்பு தோல்வி.',
-      visibilityTime: 3000,
-      autoHide: true,
-      topOffset: 60,
-    });
-  }
-  
-};
 
   
   return (
